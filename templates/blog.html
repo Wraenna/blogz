@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>My Blog</h2>
+
+{% if posts|length == 0 %}
+<p>No entries yet</p>
+{% endif %}
+
+{% endblock %}
