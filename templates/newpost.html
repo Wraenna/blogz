@@ -3,6 +3,12 @@
 
 <h2>New Post</h2>
 
-<p>Placeholder.</p>
+<form method="post">
+  <label>Post Title:
+    <input type="text" name="post_title" value="{{ post_title }}" />
+  </label>
+  <textarea rows="4" cols="125" name="post_body">{{ post_body }}</textarea>
+  <input type="submit" value="I'm done!" />
+</form>
 
 {% endblock %}
