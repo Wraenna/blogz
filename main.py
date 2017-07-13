@@ -14,13 +14,17 @@ app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
 app.secret_key = 'y337kGcys&zP3B'
 
-# Post model with id, title, and body
+# Post model with id, title, body, and date/time published
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120))
     body = db.Column(db.String(500))
     pub_date = db.Column(db.DateTime)
 
+    # Setting the pub_date to None lets us make posts
+    # Without entering in the date and time
+    # The initializer handles it for us by autopopulating
+    # The datetime with the datetime in UTC format
     def __init__(self, title, body, pub_date=None):
         self.title = title
         self.body = body
@@ -49,6 +53,7 @@ def blog():
         return render_template("blog.html", title=posts[0].title, posts=posts)
 
     # Query for all the posts.
+    # Order them by pub_date in descending order (newest to oldest)
     posts = Post.query.order_by(Post.pub_date.desc()).all()
 
     # Render the template
