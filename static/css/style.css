@@ -1,0 +1,86 @@
+body {
+  background-color: #EEEEEE;
+}
+
+
+#page_title {
+  color: #222222;
+  font: 2.5em "Helvetica Neue", sans-serif;
+  font-weight: 100;
+  text-align: center;
+  padding-top: 1em;
+
+}
+
+#indiv_post {
+  color: #222222;
+  font: 1.5em "Helvetica Neue", sans-serif;
+  font-weight: 100;
+  text-align: center;
+
+}
+
+.error {
+  font: 1em "Helvetica Neue", sans-serif;
+  font-weight: 400;
+  color: #9e3030;
+  font-weight: 400;
+
+}
+
+form {
+  padding: 2em;;
+  margin: 0 auto;
+  width: 80%;
+  font: 1em "Helvetica Neue", sans-serif;
+  font-weight: 200;
+}
+
+input[type=text] {
+  margin: 0 auto;
+  width: 50%;
+  margin: 1em;
+
+}
+
+textarea {
+  width: 100%;
+  margin-left: 0em;
+  margin-right: 5em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+input[type=password] {
+  margin: 0 auto;
+  width: 40%;
+
+}
+
+input[type=submit] {
+  width: 20%;
+}
+
+#nav {
+  text-align: center;
+  color: #444444;
+  font: 0.8em "Helvetica Neue", sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:visited {
+  color: #333333;
+}
+
+a:hover {
+  color: #888888;
+}
+
+p {
+  font: 1em "Helvetica Neue", sans-serif;
+  margin-left: 1em;
+  margin-right: 1em;
+}

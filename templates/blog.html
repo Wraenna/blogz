@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>{{ title }}</h2>
+<h2 id="page_title">{{ title }}</h2>
 
 {% if posts|length == 0 %}
 <p>No entries yet</p>
@@ -9,7 +9,7 @@
 
 {% for post in posts %}
   {% if title == "My Blog": %}
-  <h2><a href="./blog?id={{ post.id }}">{{ post.title }}</a></h2>
+  <h2 id="indiv_post"><a href="./blog?id={{ post.id }}">{{ post.title }}</a></h2>
   {% endif %}
   <p>{{ post.body }}</p>
   <hr />
