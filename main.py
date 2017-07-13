@@ -37,12 +37,11 @@ def blog():
 
     # If it finds a query parameter, it renders only the post that matches the id
     if blog_post_id:
-        # Pull all the post content to feed into the template
+        # Pull in only the posts that match the blog_post_id
+        # Which should be one since primary keys are unique
         posts = Post.query.filter_by(id=blog_post_id).all()
-        # Query specifically the first post to get access to the title
-        active_post = Post.query.filter_by(id=blog_post_id).first()
         # Render the template with the title as the post title
-        return render_template("blog.html", title=active_post.title, posts=posts)
+        return render_template("blog.html", title=posts[0].title, posts=posts)
 
     # Query for all the posts.
     posts = Post.query.all()
