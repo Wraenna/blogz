@@ -12,7 +12,7 @@ body {
 
 }
 
-#indiv_post {
+.indiv_post {
   color: #222222;
   font: 1.5em "Helvetica Neue", sans-serif;
   font-weight: 100;

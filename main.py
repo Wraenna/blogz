@@ -59,7 +59,7 @@ def require_login():
 @app.route("/logout")
 def logout():
     del session['username']
-    return redirect("/blog")
+    return redirect("/")
 
 @app.route("/signup", methods=['POST', 'GET'])
 def signup():
@@ -74,6 +74,7 @@ def signup():
         errors_on_page = False
 
         # If the username field is empty, flash the error
+        # Move some of this up to the model
         if username == "" or password == "" or verifypw == "":
             flash("One or more fields is invalid.", "error")
             errors_on_page = True
@@ -128,24 +129,24 @@ def login():
             session['username'] = username
             flash("Logged in")
             return redirect('/newpost')
-        else:
-            # If the user's username isn't in the database, flash the error.
-            if not user:
-                flash("Looks like you don't exist! Please sign up to make posts.", "error")
-            # If the password doesn't match what is in the database for that username,
-            # flash the error.
-            if user.password != password:
-                flash("Your passwords don't match!", "error")
+
+        elif user == None:
+            flash("You don't exist or you may have mistyped your username.")
+
+        elif user.password != password:
+            flash("Your passwords don't match!")
+
+        return render_template('login.html', title="Log In", username=username)
 
     return render_template('login.html', title="Log In")
 
-# TODO - Rewrite the index function to display a list of users
-# This list will need to have each name linked and use a GET
-# request so that the resulting route it directs to
-# contains the "?user=" query parameter
 @app.route("/")
 def index():
-    return redirect("/blog")
+    # Query for all the users
+    users = User.query.all()
+    # Render the template to display all the users
+    return render_template("index.html", title="Blogz", users=users)
+
 
 # Main route. This route renders the blog with all the entries.
 @app.route("/blog", methods=['POST', 'GET'])
@@ -153,22 +154,21 @@ def blog():
     # First check to see if there are any query parameters
     blog_post_id = request.args.get('id')
 
-    # TODO - Check to see if there is a user query parameter
+    user_id = request.args.get('user')
 
-    # If it finds a query parameter, it renders only the post that matches the id
+    # If it finds the id query parameter, it renders only the post that matches the id
     if blog_post_id:
         # Pull in only the posts that match the blog_post_id
         # Which should be one since primary keys are unique
         posts = Post.query.filter_by(id=blog_post_id).all()
         # Render the template with the title as the post title
         return render_template("blog.html", title=posts[0].title, posts=posts)
-
-    # TODO - Add a new if statement that activates if there is data in the
-    # variable holding the data from request.args.get('user')
-        # TODO - Create a variable that stores a list of posts filtered by
-        # the user ID
-        # Render the template singleUser.html with all the posts
-        # sorted however I want.
+    # If it finds the user query parameter, it renders only posts from that author
+    if user_id:
+        # Pull in only posts made by the user matching the user id
+        posts = Post.query.filter_by(id=user_id).all()
+        # Render the template with the list of posts to iterate over
+        return render_template("blog.html", title="My Blog", posts=posts)
 
     # Query for all the posts.
     # Order them by pub_date in descending order (newest to oldest)
