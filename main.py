@@ -1,6 +1,7 @@
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from helpers import check_empty, check_length
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -8,11 +9,11 @@ app.config['DEBUG'] = True
 # Note: the connection string after :// contains the following info:
 # user:password@server:portNumber/databaseName
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog:blog@localhost:8889/build-a-blog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:almostdone@localhost:8889/blogz'
 app.config['SQLALCHEMY_ECHO'] = True
 
 db = SQLAlchemy(app)
-app.secret_key = 'y337kGcys&zP3B'
+app.secret_key = 'y337kGcys&zP3B6978Lklkj34'
 
 # Post model with id, title, body, and date/time published
 class Post(db.Model):
@@ -20,20 +21,128 @@ class Post(db.Model):
     title = db.Column(db.String(120))
     body = db.Column(db.String(500))
     pub_date = db.Column(db.DateTime)
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     # Setting the pub_date to None lets us make posts
     # Without entering in the date and time
     # The initializer handles it for us by autopopulating
     # The datetime with the datetime in UTC format
-    def __init__(self, title, body, pub_date=None):
+    def __init__(self, title, body, owner, pub_date=None):
         self.title = title
         self.body = body
+        self.owner = owner
         if pub_date is None:
             pub_date = datetime.utcnow()
         self.pub_date = pub_date
 
+    # TODO - Move validation up here
 
-# Index route redirects to /blog
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(16), unique=True)
+    password = db.Column(db.String(32))
+    user_posts = db.relationship('Post', backref='owner')
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+
+    # TODO - Can I put validation here?
+
+
+@app.before_request
+def require_login():
+    allowed_routes = ['login', 'signup', 'index', 'blog']
+    if request.endpoint not in allowed_routes and 'username' not in session:
+        return redirect('/login')
+
+@app.route("/logout")
+def logout():
+    del session['username']
+    return redirect("/blog")
+
+@app.route("/signup", methods=['POST', 'GET'])
+def signup():
+    # If the user tries to sign up,
+    if request.method == 'POST':
+        # Pull in the variables from the form
+        username = request.form['username']
+        password = request.form['password']
+        verifypw = request.form['verifypw']
+        # Query the database for the user
+        existing_user = User.query.filter_by(username=username).first()
+        errors_on_page = False
+
+        # If the username field is empty, flash the error
+        if username == "" or password == "" or verifypw == "":
+            flash("One or more fields is invalid.", "error")
+            errors_on_page = True
+            # If the username isn't 3-20 characters, flash the error
+        if check_length(username):
+            flash("Your username should be between 3 and 20 characters.", "error")
+            errors_on_page = True
+        # If the password isn't 3-20 characters, flash the error
+        if check_length(password):
+            flash("Your password should be between 3 and 20 characters.", "error")
+            errors_on_page = True
+        # If the password and verifypw don't match, flash the error
+        if password != verifypw:
+            flash("Your passwords don't match.", "error")
+            errors_on_page = True
+        #If the user already exists, flash the error.
+        if existing_user:
+            flash("You already exist! Please log in.", "error")
+            errors_on_page = True
+
+        if errors_on_page == True:
+            return render_template("/signup.html", title="Sign Up", username=username)
+
+        # If the user doesn't exist already and their
+        # passwords match, instantiate the user as new_user,
+        # stage it, and commit it to the database.
+        # Make a new session using their username
+        # and redirect them to "/newpost"
+        if not existing_user and password == verifypw:
+            new_user = User(username, password)
+            db.session.add(new_user)
+            db.session.commit()
+            session['username'] = username
+            return redirect("/newpost")
+
+    return render_template("/signup.html", title="Sign Up")
+
+
+@app.route("/login", methods=['POST', 'GET'])
+def login():
+    # If the user submits a POST, i.e. tries to log in
+    if request.method == 'POST':
+        # Request the data from the form fields
+        username = request.form['username']
+        password = request.form['password']
+        # Go try to find the user in the database
+        user = User.query.filter_by(username=username).first()
+        # If the username exists in the database and the password matches,
+        # Make a new session using their username, flash the logged in,
+        # and then redirect them to "/newpost"
+        if user and user.password == password:
+            session['username'] = username
+            flash("Logged in")
+            return redirect('/newpost')
+        else:
+            # If the user's username isn't in the database, flash the error.
+            if not user:
+                flash("Looks like you don't exist! Please sign up to make posts.", "error")
+            # If the password doesn't match what is in the database for that username,
+            # flash the error.
+            if user.password != password:
+                flash("Your passwords don't match!", "error")
+
+    return render_template('login.html', title="Log In")
+
+# TODO - Rewrite the index function to display a list of users
+# This list will need to have each name linked and use a GET
+# request so that the resulting route it directs to
+# contains the "?user=" query parameter
 @app.route("/")
 def index():
     return redirect("/blog")
@@ -44,6 +153,8 @@ def blog():
     # First check to see if there are any query parameters
     blog_post_id = request.args.get('id')
 
+    # TODO - Check to see if there is a user query parameter
+
     # If it finds a query parameter, it renders only the post that matches the id
     if blog_post_id:
         # Pull in only the posts that match the blog_post_id
@@ -51,6 +162,13 @@ def blog():
         posts = Post.query.filter_by(id=blog_post_id).all()
         # Render the template with the title as the post title
         return render_template("blog.html", title=posts[0].title, posts=posts)
+
+    # TODO - Add a new if statement that activates if there is data in the
+    # variable holding the data from request.args.get('user')
+        # TODO - Create a variable that stores a list of posts filtered by
+        # the user ID
+        # Render the template singleUser.html with all the posts
+        # sorted however I want.
 
     # Query for all the posts.
     # Order them by pub_date in descending order (newest to oldest)
@@ -62,6 +180,7 @@ def blog():
 # Newpost route. This route allows you to add a new post.
 @app.route("/newpost", methods=['POST', 'GET'])
 def new_post():
+    post_owner = User.query.filter_by(username=session['username']).first()
     # If making a new post on this page:
     if request.method == 'POST':
         # Get your title and body
@@ -77,7 +196,7 @@ def new_post():
 
             return render_template("newpost.html", title="New Post", post_title=post_title, post_body=post_body)
         # If there are no errors, go ahead and make the post
-        new_post = Post(post_title, post_body)
+        new_post = Post(post_title, post_body, post_owner)
         db.session.add(new_post)
         db.session.commit()
 
