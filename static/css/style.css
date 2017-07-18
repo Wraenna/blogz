@@ -1,7 +1,11 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
 body {
   background-color: #EEEEEE;
 }
-
 
 #page_title {
   color: #222222;
@@ -61,10 +65,28 @@ input[type=submit] {
   width: 20%;
 }
 
-#nav {
-  text-align: center;
+nav {
+  text-align: right;
   color: #444444;
   font: 0.8em "Helvetica Neue", sans-serif;
+  background-color: #FFFFFF;
+  width: auto;
+  height: 1.5em;
+  padding-left: 0.5em;
+  padding-right: 1em;
+  padding-top: 0em;
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+}
+
+nav ul > li {
+  text-decoration: none;
+  display: inline-block;
+  line-height: 2.5;
+}
+
+#current_user {
+  font-weight: bold;
 }
 
 a {

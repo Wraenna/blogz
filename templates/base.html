@@ -5,25 +5,29 @@
         <title>{{title}}</title>
     </head>
 <body>
+  <header>
+    {% block navigation %}
+    {% endblock %}
+  </header>
+  <main>
+    <div>
+        <a href="blog">My Blog</a> | <a href="newpost">New Post</a>
+    </div>
+    <!-- <div>
+        <a href="login">Log In</a> | <a href="signup">Sign Up</a> | <a href="./logout">Log Out</a>
+    </div> -->
 
-  <div id="nav">
-      <a href="blog">My Blog</a> | <a href="newpost">New Post</a>
-  </div>
-  <div>
-      <a href="login">Log In</a> | <a href="signup">Sign Up</a> | <a href="./logout">Log Out</a>
-  </div>
+    {% block content %}
+    {% endblock %}
 
-  {% block content %}
-  {% endblock %}
-
-  {% with messages = get_flashed_messages(with_categories=True) %}
-    <ul>
-    {% for category,message in messages %}
-      <li class='{{ category }}'>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endwith %}
-
+    {% with messages = get_flashed_messages(with_categories=True) %}
+      <ul>
+        {% for category,message in messages %}
+        <li class='{{ category }}'>{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endwith %}
+    </main>
 
 
 </body>

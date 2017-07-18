@@ -140,7 +140,7 @@ def login():
 
     return render_template('login.html', title="Log In")
 
-@app.route("/")
+@app.route("/", methods=['POST', 'GET'])
 def index():
     # Query for all the users
     users = User.query.all()

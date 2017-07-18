@@ -1,0 +1,14 @@
+<nav>
+  <ul>
+    {% if 'username' in session %}
+    <li>Welcome, <a href="" id="current_user">{{ session.username }}</a>! |
+    </li>
+    <li>
+      <a href="./logout">Log Out</a>
+    </li>
+    {% else %}
+      <li><a href="login">Log In</a></li>
+      <li><a href="signup">Sign Up</a></li>
+    {% endif %}
+  </ul>
+</nav>
