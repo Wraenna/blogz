@@ -7,7 +7,7 @@ body {
   background-color: #FFFFFF;
 }
 
-#page_title {
+#page_title, h2 {
   color: #222222;
   font: 1.5em "Helvetica Neue", sans-serif;
   font-weight: 400;
@@ -33,35 +33,39 @@ body {
 }
 
 form {
-  padding: 2em;;
+  padding: 2em;
   margin: 0 auto;
-  width: 80%;
+  width: 60%;
   font: 1em "Helvetica Neue", sans-serif;
   font-weight: 200;
 }
 
-input[type=text] {
-  margin: 0 auto;
-  width: 50%;
+label {
+  width: 100%;
   margin: 1em;
+}
+
+input[type=text] {
+  margin: 1em;
+  width: 100%;
 
 }
 
 textarea {
   width: 100%;
-  margin-left: 0em;
-  margin-right: 5em;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
+  margin: 1em;
 }
 
 input[type=password] {
-  margin: 0 auto;
-  width: 40%;
+  margin: 1em;
+  width: 100%;
 
 }
 
 input[type=submit] {
+  margin: 0 auto;
+  text-align: center;
+  display: block;
   width: 20%;
 }
 
@@ -166,4 +170,8 @@ p {
 .tagline {
   font: 0.75em "Helvetica Neue", sans-serif;
 
+}
+
+#login-page {
+  text-align: center;
 }

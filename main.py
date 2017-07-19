@@ -169,7 +169,7 @@ def blog():
     # If it finds the user query parameter, it renders only posts from that author
     if user_id:
         # Pull in only posts made by the user matching the user id
-        posts = Post.query.filter_by(owner_id=user_id).all()
+        posts = Post.query.filter_by(owner_id=user_id).order_by(Post.pub_date.desc()).all()
         # Render the template with the list of posts to iterate over
         if len(posts) == 0:
             return render_template("singleUser.html", title="No Posts Yet", posts=posts)
