@@ -1,7 +1,7 @@
 <nav>
   <ul>
-    {% if 'username' in session %}
-    <li>Welcome, <a href="" id="current_user">{{ session.username }}</a>! |
+    {% if 'username' in session and 'id' in session %}
+    <li>Welcome, <a href="./blog?user={{ session.id }}" id="current_user">{{ session.username }}</a>! |
     </li>
     <li>
       <a href="./logout">Log Out</a>

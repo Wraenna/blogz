@@ -4,13 +4,13 @@ html, body {
 }
 
 body {
-  background-color: #EEEEEE;
+  background-color: #FFFFFF;
 }
 
 #page_title {
   color: #222222;
-  font: 2.5em "Helvetica Neue", sans-serif;
-  font-weight: 100;
+  font: 1.5em "Helvetica Neue", sans-serif;
+  font-weight: 400;
   text-align: center;
   padding-top: 1em;
 
@@ -18,8 +18,8 @@ body {
 
 .indiv_post {
   color: #222222;
-  font: 1.5em "Helvetica Neue", sans-serif;
-  font-weight: 100;
+  font: 1.1em "Helvetica Neue", sans-serif;
+  font-weight: 400;
   text-align: center;
 
 }
@@ -72,11 +72,8 @@ nav {
   background-color: #FFFFFF;
   width: auto;
   height: 1.5em;
-  padding-left: 0.5em;
-  padding-right: 1em;
-  padding-top: 0em;
-  padding-bottom: 1em;
-  margin-bottom: 1em;
+  padding: 0em 1em 1em 0.5em;
+  box-shadow: 0em 10em 5em;
 }
 
 nav ul > li {
@@ -89,7 +86,67 @@ nav ul > li {
   font-weight: bold;
 }
 
-a {
+.splash {
+  background-image: url('/static/img/splash_bg.jpg');
+  background-color: #0b9f43;
+  width: auto;
+  height: 12em;
+  text-align: center;
+  padding-top: 3em;
+  box-shadow: 0em 0.25em 1em #999999;
+}
+
+h1 {
+  margin-top: 0;
+  font: 4em 'Indie Flower', cursive;
+  color: #FFFFFF;
+}
+
+.flex-container {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+
+  -webkit-flex-flow: row wrap;
+  justify-content: space-around;
+}
+
+.flex-item {
+  background: #0b9f43;
+  padding: 0.5em;
+  width: 15%;
+  height: 1.25em;
+  margin-top: 0.25em;
+
+  line-height: 5em;
+  font: 1em "Helvetica Neue", sans-serif;
+  color: #FFFFFF;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 1em / 1em;
+}
+
+.user-flex-item {
+  padding: 0.5em;
+  width: 30%;
+  height: 1.25em;
+  font: 1em "Helvetica Neue", sans-serif;
+  color: #000000;
+  text-align: center;
+
+}
+
+.flex-item a:visited {
+  color: #FFFFFF;
+}
+
+a, .flex-item a {
   text-decoration: none;
 }
 
@@ -97,12 +154,16 @@ a:visited {
   color: #333333;
 }
 
-a:hover {
-  color: #888888;
+a:hover, .flex-item a:hover {
+  color: #79d74d;
 }
 
 p {
-  font: 1em "Helvetica Neue", sans-serif;
-  margin-left: 1em;
-  margin-right: 1em;
+  font: 0.9em "Helvetica Neue", sans-serif;
+  margin: 0.5em 0.5em 0em 0.25em;
+}
+
+.tagline {
+  font: 0.75em "Helvetica Neue", sans-serif;
+
 }

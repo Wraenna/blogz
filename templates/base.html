@@ -1,25 +1,34 @@
 <!doctype html>
 <html>
     <head>
+      <!-- The first link is to my stylesheet; the second is to the Indie Flower font -->
         <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}" />
+        <link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet">
         <title>{{title}}</title>
     </head>
 <body>
   <header>
+    <!-- This block will contain only navigation for all pages -->
+    <!-- I've made it a snippet to make the base a little neater -->
     {% block navigation %}
     {% endblock %}
   </header>
   <main>
-    <div>
-        <a href="blog">My Blog</a> | <a href="newpost">New Post</a>
+    <!-- This could probably be partialed out like the nav -->
+    <div class="splash">
+      <h1>Blogz</h1>
+      <ul class="flex-container">
+        <li class="flex-item"><a href="/">All Users</a></li>
+        <li class="flex-item"><a href="newpost">New Post</a></li>
+        <li class="flex-item"><a href="blog">All Posts</a></li>
+      </ul>
     </div>
-    <!-- <div>
-        <a href="login">Log In</a> | <a href="signup">Sign Up</a> | <a href="./logout">Log Out</a>
-    </div> -->
+    <!-- Primary block content goes here -->
 
     {% block content %}
     {% endblock %}
 
+    <!-- Error messages and success messages load here -->
     {% with messages = get_flashed_messages(with_categories=True) %}
       <ul>
         {% for category,message in messages %}

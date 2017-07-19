@@ -59,6 +59,7 @@ def require_login():
 @app.route("/logout")
 def logout():
     del session['username']
+    del session['id']
     return redirect("/")
 
 @app.route("/signup", methods=['POST', 'GET'])
@@ -108,6 +109,7 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
             session['username'] = username
+            session['id'] = new_user.id
             return redirect("/newpost")
 
     return render_template("/signup.html", title="Sign Up")
@@ -127,6 +129,7 @@ def login():
         # and then redirect them to "/newpost"
         if user and user.password == password:
             session['username'] = username
+            session['id'] = user.id
             flash("Logged in")
             return redirect('/newpost')
 
@@ -145,7 +148,7 @@ def index():
     # Query for all the users
     users = User.query.all()
     # Render the template to display all the users
-    return render_template("index.html", title="Blogz", users=users)
+    return render_template("index.html", title="Current users", users=users)
 
 
 # Main route. This route renders the blog with all the entries.
@@ -166,9 +169,12 @@ def blog():
     # If it finds the user query parameter, it renders only posts from that author
     if user_id:
         # Pull in only posts made by the user matching the user id
-        posts = Post.query.filter_by(id=user_id).all()
+        posts = Post.query.filter_by(owner_id=user_id).all()
         # Render the template with the list of posts to iterate over
-        return render_template("blog.html", title="My Blog", posts=posts)
+        if len(posts) == 0:
+            return render_template("singleUser.html", title="No Posts Yet", posts=posts)
+        else:
+            return render_template("singleUser.html", title="{}'s Posts".format(posts[0].owner.username), posts=posts)
 
     # Query for all the posts.
     # Order them by pub_date in descending order (newest to oldest)
