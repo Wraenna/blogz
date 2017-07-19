@@ -60,7 +60,7 @@ def require_login():
 def logout():
     del session['username']
     del session['id']
-    return redirect("/")
+    return redirect("/blog")
 
 @app.route("/signup", methods=['POST', 'GET'])
 def signup():
@@ -181,7 +181,7 @@ def blog():
     posts = Post.query.order_by(Post.pub_date.desc()).all()
 
     # Render the template
-    return render_template("blog.html", title="My Blog", posts=posts)
+    return render_template("blog.html", title="All Blog Posts", posts=posts)
 
 # Newpost route. This route allows you to add a new post.
 @app.route("/newpost", methods=['POST', 'GET'])
