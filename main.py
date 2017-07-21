@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from helpers import check_empty, check_length
 from hashutils import make_pw_hash, check_pw_hash
-from config import POSTS_PER_PAGE
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -156,8 +155,7 @@ def index():
 
 # Main route. This route renders the blog with all the entries.
 @app.route("/blog", methods=['POST', 'GET'])
-@app.route("/blog/<int:page>", methods=['POST', 'GET'])
-def blog(page=1):
+def blog():
     # First check to see if there are any query parameters
     blog_post_id = request.args.get('id')
 
@@ -182,12 +180,7 @@ def blog(page=1):
 
     # Query for all the posts.
     # Order them by pub_date in descending order (newest to oldest)
-    # This also provides for pagination; by modifying the function up top
-    # to provide a default page value of 1,
-    # the paginate method defines the first page number, pulls in number of
-    # posts per page from the config file, and then sets the 404 error flag to
-    # false.
-    posts = Post.query.order_by(Post.pub_date.desc()).paginate(page, POSTS_PER_PAGE, False)
+    posts = Post.query.order_by(Post.pub_date.desc()).all()
 
     # Render the template
     return render_template("blog.html", title="All Blog Posts", posts=posts)

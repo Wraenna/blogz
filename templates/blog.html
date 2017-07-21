@@ -4,11 +4,11 @@
 
 <h2 id="page_title">{{ title }}</h2>
 
-{% if posts.items|length == 0 %}
+{% if posts|length == 0 %}
 <p>No entries yet</p>
 {% endif %}
 
-{% for post in posts.items %}
+{% for post in posts %}
   {% if title == "All Blog Posts": %}
   <h3 class="indiv_post"><a href="./blog?id={{ post.id }}">{{ post.title }}</a></h3>
   {% endif %}
