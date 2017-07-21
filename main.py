@@ -2,6 +2,7 @@ from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from helpers import check_empty, check_length
+from hashutils import make_pw_hash, check_pw_hash
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -40,12 +41,12 @@ class Post(db.Model):
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(16), unique=True)
-    password = db.Column(db.String(32))
+    pw_hash = db.Column(db.String(512))
     user_posts = db.relationship('Post', backref='owner')
 
     def __init__(self, username, password):
         self.username = username
-        self.password = password
+        self.pw_hash = make_pw_hash(password)
 
     # TODO - Can I put validation here?
 
@@ -71,31 +72,32 @@ def signup():
         password = request.form['password']
         verifypw = request.form['verifypw']
         # Query the database for the user
+        # Make a variable we'll switch ON if we get an error; it starts out False
         existing_user = User.query.filter_by(username=username).first()
         errors_on_page = False
 
-        # If the username field is empty, flash the error
+        # If the username field is empty, flash the error, errors = True
         # Move some of this up to the model
         if username == "" or password == "" or verifypw == "":
             flash("One or more fields is invalid.", "error")
             errors_on_page = True
-            # If the username isn't 3-20 characters, flash the error
+        # If the username isn't 3-20 characters, flash the error, errors = True
         if check_length(username):
             flash("Your username should be between 3 and 20 characters.", "error")
             errors_on_page = True
-        # If the password isn't 3-20 characters, flash the error
+        # If the password isn't 3-20 characters, flash the error, errors = True
         if check_length(password):
             flash("Your password should be between 3 and 20 characters.", "error")
             errors_on_page = True
-        # If the password and verifypw don't match, flash the error
+        # If the password and verifypw don't match, flash the error, errors = True
         if password != verifypw:
             flash("Your passwords don't match.", "error")
             errors_on_page = True
-        #If the user already exists, flash the error.
+        #If the user already exists, flash the error., errors = True
         if existing_user:
             flash("You already exist! Please log in.", "error")
             errors_on_page = True
-
+        # If our errors variable is True, re-render the template with the errors
         if errors_on_page == True:
             return render_template("/signup.html", title="Sign Up", username=username)
 
@@ -127,7 +129,7 @@ def login():
         # If the username exists in the database and the password matches,
         # Make a new session using their username, flash the logged in,
         # and then redirect them to "/newpost"
-        if user and user.password == password:
+        if user and check_pw_hash(password, user.pw_hash):
             session['username'] = username
             session['id'] = user.id
             flash("Logged in")
